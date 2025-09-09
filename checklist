@@ -9,3 +9,9 @@ X-Forwarded-For: 127.0.0.1
 X-Client-IP: 127.0.0.1
 Client-IP: 127.0.0.1
 _________________________________________________________________
+
+Kali Tools
+
+1. For Forced Browsing
+feroxbuster -u <URL> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50 -k
+
