@@ -15,3 +15,9 @@ Kali Tools
 1. For Forced Browsing
 feroxbuster -u <URL> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50 -k
 
+=> SSL Certificate Issue
+Some apps (like yours) have invalid/misconfigured SSL.
+Fix → tell feroxbuster to ignore SSL errors:
+feroxbuster -u <URL> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -t 50 -k
+
+
