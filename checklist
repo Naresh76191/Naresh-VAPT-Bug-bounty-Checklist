@@ -24,7 +24,7 @@ feroxbuster -u <URL> -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium
 ______________________________________________________________________
 FInding  FIND HIDDEN INFORMATION FORM JAVASCRIPT
 
-1. katana -u https://filetrackeraudit.ezeefile.in/ -d 5 -jc | grep ".js$" | uniq | sort > dir.txt
+1. katana -u https://URL -d 5 -jc | grep ".js$" | uniq | sort > dir.txt
 2. git clone https://github.com/m4ll0k/SecretFinder.git
 3. └─# python3 -m venv venv
 4. └─# source venv/bin/activate
