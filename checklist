@@ -31,5 +31,21 @@ FInding  FIND HIDDEN INFORMATION FORM JAVASCRIPT
 5. python -m pip install -r requirements.txt   
 6. cat /home/kali/dir.txt | while read url; do python SecretFinder.py -i "$url" -o cli >> /home/kali/secret.txt; done
 
+_______________________________________________________________________
+To find Refelected XSS automation tool
+
+1. Dalfox
+git clone https://github.com/hahwul/dalfox
+cd dalfox
+go install
+go build
+
+=> if want to Run where cookies are needed
+./dalfox url "https://URL=Branchcxxf7" \
+  --cookie "ci_session=e69ca4tejrjhaq1rcpkaihcgje42ltis" \
+  -o /tmp/dalfox_status_auth.json
+
+=>./dalfox url "https://target.tld/page?param=test"
+
 
 
