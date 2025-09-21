@@ -46,6 +46,37 @@ go build
   -o /tmp/dalfox_status_auth.json
 
 =>./dalfox url "https://target.tld/page?param=test"
+_________________________________________________________________________
+Web cache deception
 
+1. Cache rules are often set up to store static resources, which generally don't change frequently 
+and are reused across multiple pages. Dynamic content is not cached as it's more likely to contain sensitive information, 
+ensuring users get the latest data directly from the server.
+2. Static file extension rules : .css for stylesheets or .js for JavaScript files.
+3. Static directory rules : /static or /assets
+4.File name rules - These rules match specific file names to target files that are universally required for web operations and 
+change rarely, such as robots.txt and favicon.ico
 
+Poin to Rember 
+While testing for discrepancies and crafting a web cache deception exploit, make sure that each request you send has a different cache key. 
+Otherwise, you may be served cached responses, which will impact your test results.
+As both URL path and any query parameters are typically included in the cache key, you can change the key by adding a query string to the 
+path and changing it each time you send a request. Automate this process using the Param Miner extension. To do this, once you've installed the extension, 
+click on the top-level Param miner > Settings menu, then select Add dynamic cachebuster. Burp now adds a unique query string to every request that you make.
+You can view the added query strings in the Logger tab.
+
+Detecting Cached Responses
+
+1. Check X-Cache Header (eg: X-Cache: hit)
+   hit → Response served from cache
+   miss → Response fetched from origin (send again, may turn into hit)
+   dynamic → Content generated dynamically, not cached
+   refresh → Cached content was outdated and revalidated
+
+2. Check Cache-Control Header
+   Look for public with max-age > 0 → Cacheable resource (not always guaranteed)
+
+3. Compare Response Times
+   Fast response → Likely cached
+   Slow response → Likely from origin server
 
