@@ -1,3 +1,15 @@
+VAPT/Bug Bounty Check List
++++++++++++++++++++++++++++++++++++++++++++
+Links for Referance and Attacks
+1. https://github.com/swisskyrepo/PayloadsAllTheThings
+2.
+
++++++++++++++++++++++++++++++++++++++++++++
+Links for tools
+1. https://github.com/vladko312/SSTImap
++++++++++++++++++++++++++++++++++++++
+
+*vulnerability*
 ---For waf bypass, and similar---
 X-Forwarded-Host
 X-Forwarded-Port
