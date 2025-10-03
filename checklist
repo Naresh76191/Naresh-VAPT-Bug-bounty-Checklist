@@ -172,7 +172,7 @@ ________________________________________________________________________________
  SSTI Tools : download a remote file to our local machine ( -D '/etc/passwd' './passwd'), 
               we can execute a system command using the -S flag (-S id)
                we can use --os-shell to obtain an interactive shell: --os-shell
-   git clone https://github.com/vladko312/SSTImap
+   git clone https://github.com/vladko312/SSTImap.git
    cd SSTImap
    pip3 install -r requirements.txt
    python3 sstimap.py -u http://172.17.0.2/index.php?name=test
