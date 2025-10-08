@@ -238,3 +238,6 @@ Exploiting SSTI - Twig
    {{ ['id'] | filter('system') }} - RCE -  use a PHP built-in function such as system. We can pass an argument to this function by using Twig's filter function
 in place id replace with linux command like ls -la, cat etc
 SSTI Tools
+___________________________________________________________________________________________
+
+SSI Injection
